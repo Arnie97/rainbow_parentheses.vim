@@ -204,11 +204,12 @@ endfunction
 function! s:regions(max)
   let pairs = get(g:, 'rainbow#pairs', [['(',')']])
   for level in range(1, a:max)
-    let cmd = 'syntax region rainbowParens%d matchgroup=rainbowParensShell%d start=/%s/ end=/%s/ contains=%s'
+    let cmd = 'syntax region rainbowParens%d matchgroup=rainbowParensShell%d start=/%s/ end=/%s/ contains=%s %s'
     let children = extend(['TOP'], map(range(level, a:max), '"rainbowParens".v:val'))
-    for pair in pairs
-      let [open, close] = map(copy(pair), 'escape(v:val, "[]/")')
-      execute printf(cmd, level, level, open, close, join(children, ','))
+    for pair_args in pairs
+      let [open, close] = map(copy(pair_args[:1]), 'escape(v:val, "[]/")')
+      let syntax_args = get(pair_args, 2, '')
+      execute printf(cmd, level, level, open, close, join(children, ','), syntax_args)
     endfor
   endfor
 endfunction
