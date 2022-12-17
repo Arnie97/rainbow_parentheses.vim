@@ -146,7 +146,7 @@ endfunction
 
 function! s:show_colors()
   for level in reverse(range(1, s:max_level))
-    execute 'hi rainbowParensShell'.level
+    execute 'hi rainbowcol'.level
   endfor
 endfunction
 
@@ -165,7 +165,7 @@ function! rainbow_parentheses#activate(...)
 
   for level in range(1, s:max_level)
     let col = colors[(level - 1) % len(colors)]
-    execute printf('hi rainbowParensShell%d %s', s:max_level - level + 1, col)
+    execute printf('hi rainbowcol%d %s', s:max_level - level + 1, col)
   endfor
   call s:regions(s:max_level)
 
@@ -181,7 +181,7 @@ function! rainbow_parentheses#deactivate()
   if exists('#rainbow_parentheses')
     for level in range(1, s:max_level)
       " FIXME How to cope with changes in rainbow#max_level?
-      silent! execute 'hi clear rainbowParensShell'.level
+      silent! execute 'hi clear rainbowcol'.level
       " FIXME buffer-local
       silent! execute 'syntax clear rainbowParens'.level
     endfor
@@ -204,7 +204,7 @@ endfunction
 function! s:regions(max)
   let pairs = get(g:, 'rainbow#pairs', [['(',')']])
   for level in range(1, a:max)
-    let cmd = 'syntax region rainbowParens%d matchgroup=rainbowParensShell%d start=/%s/ end=/%s/ contains=%s %s'
+    let cmd = 'syntax region rainbowParens%d matchgroup=rainbowcol%d start=/%s/ end=/%s/ contains=%s %s'
     let children = extend(['TOP'], map(range(level, a:max), '"rainbowParens".v:val'))
     for pair_args in pairs
       let [open, close] = map(copy(pair_args[:1]), 'escape(v:val, "[]/")')
